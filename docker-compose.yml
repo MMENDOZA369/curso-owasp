@@ -1,0 +1,21 @@
+services:
+  Myproject:
+    build:
+      context: .  # Usa el Dockerfile que está junto al docker-compose.yml
+      dockerfile: Dockerfile
+    image: curso-owasp-myproject
+    volumes:
+      - ./Myproyect/report:/app/report
+    command: ["bash", "-c", "/app/INSEC-TEST-001-CHECK-INIT.sh"]
+
+  servidor:
+    build:
+      context: ./Myproyect/report
+      dockerfile: Dockerfile  # Dockerfile de Nginx dentro de report/
+    image: nginx:custom
+    ports:
+      - "5340:80"
+    volumes:
+      - ./Myproyect/report:/usr/share/nginx/html
+    depends_on:
+      - Myproject
