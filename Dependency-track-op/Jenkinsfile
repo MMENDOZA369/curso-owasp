@@ -1,0 +1,22 @@
+pipeline{
+    agent any 
+    stages{
+        stage('Generar SBOM'){
+            steps{
+                sh 'mvn or.cyclonedx:cyclonedx-maven-plugin:makeAggregateBom'
+            }
+        }
+        stage('Enviar SBOM A Dependency-Track'){
+            steps{
+                sh '''
+                curl -X POST "http://dependency-track-server/api/v1/bom" \\\\
+                -H "X-Api-key: your_api_key" \\\\
+                -H "Content-Type: multipart/form-data" \\\\
+                -F "project =<project_id>" \\\\
+                -F "bom=@target/bom.xml"
+                '''
+            }
+
+        }
+    }
+}
