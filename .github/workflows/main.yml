@@ -59,7 +59,7 @@ jobs:
           echo "✅ Análisis de dependencias completado."
           echo "📄 Reporte generado en ./report/dependency-check-report.html"
       - name: Subir informe
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: reporte-dependencias
           path: ./report
