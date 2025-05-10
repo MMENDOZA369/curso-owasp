@@ -1,0 +1,23 @@
+name: CI/CD threat_dragon
+on:
+  push:
+    branches:
+      - main
+  
+
+jobs:
+  deploy-threat_dragon:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure Docker
+      - uses: docker/setup-buildx-action@v1
+      
+      - name: Desplegar Threat Dragon
+        run: |
+          docker pull owasp/threat-dragon
+          docker run -d -p 3000:3000 owasp/threat-dragon
+
+      - name: Validar amenzas 
+        run: |
+          curl -X GET http://localhost:3000/api/threatmodel
+          echo "Validación de amenazas completada"

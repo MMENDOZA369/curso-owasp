@@ -12,7 +12,6 @@ if [ -z "$APIKEY" ]; then
     exit 1
 fi
 APIKEY="${APIKEY}"
-echo "APIKEY: ${APIKEY}"
 # Color naranja ANSI 256 (código 208)
 ORANGE='\033[38;5;208m'
 RESET='\033[0m'
