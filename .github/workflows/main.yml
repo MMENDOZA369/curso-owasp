@@ -6,9 +6,8 @@ on:
   pull_request:
     branches:
       - main
-      
-  workflow_dispatch:   
-  
+  workflow_dispatch:
+
 jobs:
   dependency-check:
     runs-on: ubuntu-latest
@@ -42,27 +41,25 @@ jobs:
           echo "Descargando OWASP Dependency-Check..."
           curl -L "https://github.com/dependency-check/DependencyCheck/releases/download/v12.1.1/dependency-check-12.1.1-release.zip" -o dependency-check.zip
 
-          
           unzip dependency-check.zip -d dependency-check
           echo "Verificando estructura de archivos descomprimidos:"
           ls -R dependency-check
       
-          # Adjust the path to the dependency-check.sh file
-          if [ -f "dependency-check/dependency-check.sh" ]; then
-            chmod +x dependency-check/dependency-check.sh
-          elif [ -f "dependency-check/bin/dependency-check.sh" ]; then
-            chmod +x dependency-check/bin/dependency-check.sh
+          # Adjust the path to the dependency-check.sh file dynamically
+          FILE_PATH=$(find dependency-check -name "dependency-check.sh" | head -n 1)
+
+          if [ -n "$FILE_PATH" ]; then
+              chmod +x "$FILE_PATH"
           else
-            echo "❌ Error: Archivo dependency-check.sh no encontrado."
-            exit 1
+              echo "❌ Error: Archivo dependency-check.sh no encontrado."
+              exit 1
           fi
           
-          chmod +x /dependency-check/dependency-check/bin/dependency-check.sh
           rm dependency-check.zip
 
           echo "Configurando OWASP Dependency-Check..."
-          echo "Actualizar dependency-check............."
-          ./dependency-check/dependency-check/bin/dependency-check.sh --updateonly 
+          echo "Actualizar dependency-check..."
+          $FILE_PATH --updateonly 
           echo "✅ Actualización de OWASP Dependency-Check completada."
 
       - name: Ejecutar Análisis de Dependencias
@@ -72,11 +69,11 @@ jobs:
 
           echo "✅ Análisis de dependencias completado."
           echo "📄 Reporte generado en ./report/dependency-check-report.html"
+          
       - name: Subir informe
         uses: actions/upload-artifact@v4
         with:
           name: reporte-dependencias
           path: ./report
-
 
   
