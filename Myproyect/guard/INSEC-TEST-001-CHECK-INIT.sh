@@ -30,19 +30,19 @@ echo "╚═══════════════════════�
 echo "${RESET}"
 
 echo "Descargando OWASP Dependency-Check..."
-curl -L "https://github.com/dependency-check/DependencyCheck/releases/download/v12.1.1/dependency-check-12.1.1-release.zip" -o dependency-check.zip
+curl -L "https://github.com/dependency-check/DependencyCheck/releases/download/v12.1.1/dependency-check-12.1.1-release.zip" -o dependency-check.zip > error.log
 
-unzip dependency-check.zip -d dependency-check
-chmod +x dependency-check/dependency-check.sh
-rm dependency-check.zip
+unzip dependency-check.zip -d dependency-check >> error.log
+chmod +x dependency-check/dependency-check.sh >> error.log
+rm dependency-check.zip >> error.log
 
 echo "Configurando OWASP Dependency-Check..."
 echo "Actualizar dependency-check............."
-./dependency-check/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey "${APIKEY}" 
+./dependency-check/dependency-check/bin/dependency-check.sh --updateonly --nvdApiKey "${APIKEY}" >> error.log
 echo "✅ Actualización de OWASP Dependency-Check completada."
 
 echo "Ejecutando Análisis de dependencias de seguridad..."
-./dependency-check/dependency-check/bin/dependency-check.sh --project "demo" --scan "." --format "HTML" --out ./report
+./dependency-check/dependency-check/bin/dependency-check.sh --project "demo" --scan "." --format "HTML" --out ./report >> error.log
 
 echo "✅ Análisis de dependencias completado."
 echo "📄 Reporte generado en ./report/dependency-check-report.html"
